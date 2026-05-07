@@ -6,15 +6,17 @@ import './index.css';
 
 function App() {
   const [path, setPath] = useState(window.location.pathname);
+  const [updateCount, setUpdateCount] = useState(0);
 
   useEffect(() => {
     const handleLocationChange = () => {
-      setPath(window.location.pathname);
+      const newPath = window.location.pathname;
+      console.log('[Router] Navigation to:', newPath);
+      setPath(newPath);
+      setUpdateCount(prev => prev + 1);
     };
 
     window.addEventListener('popstate', handleLocationChange);
-    
-    // Custom event for internal navigation
     window.addEventListener('navigate', handleLocationChange);
 
     return () => {
@@ -23,27 +25,39 @@ function App() {
     };
   }, []);
 
-  // Explicit routing based on window.location.pathname
-  const currentPath = window.location.pathname;
-  
-  if (currentPath === '/forecasting') {
-    return <Forecasting />;
+  const currentPath = path || window.location.pathname;
+  console.log('[Router] Current path:', currentPath, 'Update count:', updateCount);
+
+  // Force re-render by using key
+  if (currentPath.includes('/forecasting')) {
+    return <Forecasting key={`forecasting-${updateCount}`} />;
   }
 
-  return <Index />;
+  return <Index key={`index-${updateCount}`} />;
 }
 
-// Global navigation helper
+// Global navigation helper with better error handling
 (window as any).navigateTo = (href: string) => {
-  window.history.pushState({}, '', href);
-  window.dispatchEvent(new Event('navigate'));
+  console.log('[Navigation] Navigating to:', href);
+  try {
+    window.history.pushState({}, '', href);
+    // Dispatch custom event to trigger re-render
+    const event = new Event('navigate', { bubbles: true });
+    window.dispatchEvent(event);
+    console.log('[Navigation] Event dispatched successfully');
+  } catch (error) {
+    console.error('[Navigation] Error:', error);
+  }
 };
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
+  console.log('[App] Mounting React application');
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
   );
+} else {
+  console.error('[App] Root element not found!');
 }

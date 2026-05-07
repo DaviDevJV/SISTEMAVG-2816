@@ -280,9 +280,12 @@ export default function Index() {
           className="bg-[#39FF14] text-black font-bold py-4 px-8 rounded-2xl uppercase tracking-widest text-xs disabled:opacity-50">
           {isExporting ? "Gerando..." : "Exportar Relatório PDF"}
         </button>
-        <Link href="/forecasting" className="bg-black border border-[#39FF14]/30 text-[#39FF14] font-bold py-4 px-8 rounded-2xl uppercase tracking-widest text-xs text-center">
+        <button 
+          onClick={() => (window as any).navigateTo('/forecasting')}
+          className="bg-black border border-[#39FF14]/30 text-[#39FF14] font-bold py-4 px-8 rounded-2xl uppercase tracking-widest text-xs text-center"
+        >
           Ir para Previsão Anual
-        </Link>
+        </button>
       </div>
     </div>
   );

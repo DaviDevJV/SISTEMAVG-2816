@@ -1,29 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import { Route, Switch } from "wouter";
 import Index from './pages/index';
 import Forecasting from './pages/forecasting';
 import './index.css';
 
-console.log("VANGUARD: Starting application with routing...");
-const rootElement = document.getElementById('root');
+function App() {
+  const [path, setPath] = useState(window.location.pathname);
 
-if (rootElement) {
-  try {
-    const root = ReactDOM.createRoot(rootElement);
-    root.render(
-      <React.StrictMode>
-        <Switch>
-          <Route path="/" component={Index} />
-          <Route path="/forecasting" component={Forecasting} />
-          <Route>404 Page Not Found</Route>
-        </Switch>
-      </React.StrictMode>
-    );
-    console.log("VANGUARD: Render call complete with routing.");
-  } catch (error) {
-    console.error("VANGUARD: Render error:", error);
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setPath(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    
+    // Custom event for internal navigation
+    window.addEventListener('navigate', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('navigate', handleLocationChange);
+    };
+  }, []);
+
+  if (path === '/forecasting') {
+    return <Forecasting />;
   }
-} else {
-  console.error("VANGUARD: Root element NOT found!");
+
+  return <Index />;
+}
+
+// Global navigation helper
+(window as any).navigateTo = (href: string) => {
+  window.history.pushState({}, '', href);
+  window.dispatchEvent(new Event('navigate'));
+};
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
 }

@@ -277,7 +277,10 @@ export default function Forecasting() {
       <div className="max-w-7xl mx-auto px-4 pt-6 pb-8">
         {/* Header */}
         <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-          <Link href="/" className="flex items-center gap-3 group">
+          <div 
+            onClick={() => (window as any).navigateTo('/')}
+            className="flex items-center gap-3 group cursor-pointer"
+          >
             <div className="w-10 h-10 rounded-xl bg-[#0A0A0A] border border-[#1A1A1A] flex items-center justify-center text-[#39FF14] group-hover:border-[#39FF14]/50 transition-all">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
             </div>
@@ -285,7 +288,7 @@ export default function Forecasting() {
               <h1 className="text-white font-bold tracking-[0.2em] uppercase text-sm" style={{ fontFamily: "'Orbitron', monospace" }}>VANGUARD</h1>
               <p className="text-[#555] text-[9px] uppercase tracking-widest">Voltar ao ROI</p>
             </div>
-          </Link>
+          </div>
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl px-4 py-2">

@@ -1,53 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import Index from './pages/index';
 import Forecasting from './pages/forecasting';
 import './index.css';
 
-function App() {
-  const [path, setPath] = useState(window.location.pathname);
-  const [updateCount, setUpdateCount] = useState(0);
+// Custom hook para roteamento
+function useLocation() {
+  const [location, setLocation] = useState(window.location.pathname);
 
   useEffect(() => {
-    const handleLocationChange = () => {
-      const newPath = window.location.pathname;
-      console.log('[Router] Navigation to:', newPath);
-      setPath(newPath);
-      setUpdateCount(prev => prev + 1);
+    const handlePopState = () => {
+      console.log('[useLocation] popstate event, new pathname:', window.location.pathname);
+      setLocation(window.location.pathname);
     };
 
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('navigate', handleLocationChange);
+    const handleNavigate = () => {
+      console.log('[useLocation] navigate event, new pathname:', window.location.pathname);
+      setLocation(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('navigate', handleNavigate);
 
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('navigate', handleLocationChange);
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('navigate', handleNavigate);
     };
   }, []);
 
-  const currentPath = path || window.location.pathname;
-  console.log('[Router] Current path:', currentPath, 'Update count:', updateCount);
-
-  // Force re-render by using key
-  if (currentPath.includes('/forecasting')) {
-    return <Forecasting key={`forecasting-${updateCount}`} />;
-  }
-
-  return <Index key={`index-${updateCount}`} />;
+  return location;
 }
 
-// Global navigation helper with better error handling
-(window as any).navigateTo = (href: string) => {
-  console.log('[Navigation] Navigating to:', href);
-  try {
-    window.history.pushState({}, '', href);
-    // Dispatch custom event to trigger re-render
-    const event = new Event('navigate', { bubbles: true });
-    window.dispatchEvent(event);
-    console.log('[Navigation] Event dispatched successfully');
-  } catch (error) {
-    console.error('[Navigation] Error:', error);
+function App() {
+  const location = useLocation();
+  
+  console.log('[App] Rendering with location:', location);
+
+  if (location.includes('/forecasting')) {
+    console.log('[App] Rendering Forecasting component');
+    return <Forecasting />;
   }
+
+  console.log('[App] Rendering Index component');
+  return <Index />;
+}
+
+// Global navigation helper
+(window as any).navigateTo = (href: string) => {
+  console.log('[navigateTo] Navigating to:', href);
+  window.history.pushState({}, '', href);
+  
+  // Dispatch custom event
+  const event = new Event('navigate', { bubbles: true });
+  window.dispatchEvent(event);
 };
 
 const rootElement = document.getElementById('root');

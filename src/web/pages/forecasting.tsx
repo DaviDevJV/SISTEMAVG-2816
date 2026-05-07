@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useMemo, useEffect, useRef } from "react";
 // import { Link } from "wouter"; // Removido para usar navegação customizada
 import html2canvas from "html2canvas";

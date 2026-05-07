@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Link } from "wouter";
+// import { Link } from "wouter"; // Removido para usar navegação customizada
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { ContainerScroll } from "../components/ui/container-scroll-animation";

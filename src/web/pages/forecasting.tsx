@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Link } from "wouter";
+// import { Link } from "wouter"; // Removido para usar navegação customizada
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 

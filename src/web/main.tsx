@@ -23,7 +23,10 @@ function App() {
     };
   }, []);
 
-  if (path === '/forecasting') {
+  // Explicit routing based on window.location.pathname
+  const currentPath = window.location.pathname;
+  
+  if (currentPath === '/forecasting') {
     return <Forecasting />;
   }
 

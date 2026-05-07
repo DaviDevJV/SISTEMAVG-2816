@@ -184,10 +184,21 @@ export default function Index() {
   const handleExportPDF = async () => {
     setIsExporting(true);
     const element = document.getElementById("pdf-content");
-    if (!element) return;
-
+    if (!element) {
+      console.error("Element #pdf-content not found");
+      setIsExporting(false);
+      return;
+    }
     try {
-      const canvas = await html2canvas(element, { backgroundColor: "#000000", scale: 2, useCORS: true, logging: false, windowWidth: 1400 });
+      console.log("Starting PDF export...");
+      const canvas = await html2canvas(element, { 
+        backgroundColor: "#000000", 
+        scale: 2, 
+        useCORS: true, 
+        logging: true, 
+        windowWidth: 1400,
+        allowTaint: true
+      });;
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
       const imgProps = pdf.getImageProperties(imgData);
